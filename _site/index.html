@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Philadelphia Map Test</title>
+    <meta name="description" content="">
+
+    <!-- Icons -->
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon" />
+
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Della+Respira|Barlow:300|Lato|Lato:300|Montserrat" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <script type="text/javascript" src="/PhillyMemorialsTest/assets/jquery/jquery-1.11.0.min.js"></script>
+
+    <script type="text/javascript" src="/PhillyMemorialsTest/js/site.js"></script>
+
+    <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />-->
+	   <script type="text/javascript" src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+
+     <script type="text/javascript" src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
+     integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
+     crossorigin=""></script>
+
+
+     <!-- Load Leaflet Label from GitHub -->
+     <script type="text/javascript" src="https://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
+
+     <!-- Include Leaflet.heat from CDN -->
+     <script type="text/javascript" src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+     <!-- Load Heatmap Feature Layer from CDN -->
+     <script type="text/javascript" src="https://cdn.jsdelivr.net/leaflet.esri.heatmap-feature-layer/2.0.0-beta.1/esri-leaflet-heatmap-feature-layer.js"></script>
+
+      <!-- Load Esri Leaflet Renderers from CDN -->
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/leaflet.esri.renderers/2.0.2/esri-leaflet-renderers.js"></script>
+
+      <!-- Load Vector Icon from GitHub -->
+      <script type="text/javascript" src="https://muxlab.github.io/Leaflet.VectorIcon/L.VectorIcon.js"></script>
+
+      <!-- Load Leaflet Omnivore -->
+      <script type="text/javascript" src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
+
+      <!-- Load L.esri.WebMap -->
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/leaflet.esri.webmap/0.4.0/esri-leaflet-webmap.js"></script>
+
+      <script type="text/javascript" src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup-src.js"></script>
+
+
+    <link rel="stylesheet" href="/PhillyMemorialsTest/css/leaflet.css">
+    <link rel="stylesheet" href="/PhillyMemorialsTest/assets/leaflet-panel-layers/leaflet-panel-layers.min.css">
+    <script type="text/javascript" src="/PhillyMemorialsTest/assets/leaflet-panel-layers/leaflet-panel-layers.min.js"></script>
+    <link rel="stylesheet" href="/PhillyMemorialsTest/assets/leaflet-panel-layers/leaflet-panel-layers.src.css">
+    <script type="text/javascript" src="/PhillyMemorialsTest/assets/leaflet-panel-layers/leaflet-panel-layers.src.js"></script>
+
+	  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.0.4/dist/MarkerCluster.css" />
+	  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.0.4/dist/MarkerCluster.Default.css" />
+	  <script src="https://unpkg.com/leaflet.markercluster@1.0.4/dist/leaflet.markercluster-src.js"></script>
+
+
+
+	 <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/PhillyMemorialsTest/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/PhillyMemorialsTest/">
+
+
+    <!-- Lightbox -->
+	  <link href="assets/lightbox2/lightbox.css" rel="stylesheet">
+	  <script src="assets/lightbox2/lightbox.js"></script>
+
+</head>
+
+
+  <body>
+
+  	<div class="sidebar">
+    	<div id="sidebar-content"></div>
+</div>
+
+    	   <script>
+    	    window.onload = function(){
+          if (localStorage['selectedtem'] != undefined){
+            new_map();
+          } else {
+  		new_map('grouped');
+          }
+          reloadhtml();
+    	    };
+  	      window.onhashchange = function() {
+          //new_map();
+  	      reloadhtml();
+  	      };
+    	    </script>
+
+    <div id="map"> </div>
+
+    <script>
+
+    map = L.map('map' , {scrollWheelZoom: false}).setView([0, 0], 1);
+    var markers = ''
+
+     window.change_map = function(){
+        localStorage.setItem('selectedtem', document.getElementById("choose").value);
+        new_map();
+    }
+
+     function makeMap(markergrouping, webmap){
+     	if (markergrouping == 'grouped') { markers = new L.markerClusterGroup({showCoverageOnHover: false});}
+    	else if (markergrouping == 'single') { markers = new L.featureGroup();}
+     	var items = {};
+
+          // set up variables to use during jekyll loop
+          var lat, lng, content, marker;
+
+              webmap.on('load', function () {
+                var overlayMaps = {};
+                webmap.layers.map(function (l) {
+                  overlayMaps[l.title] = l.layer;
+                });
+                L.control.layers({}, overlayMaps, {
+                  position: 'bottomleft'
+                }).addTo(webmap._map);
+              });
+
+
+             //  L.tileLayer('', {
+             //    "attribution" : '<a target="_blank" href="href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a target="_blank" href="https://github.com/dnoneill/flaneur">Flâneur</a>',
+             //    "minZoom" : 0,
+             //    "maxZoom" : 20,
+             //    "errorTileUrl" : "img/error-tile-image.png",
+             //    "subdomains" : ["a", "b", "c", "d"],
+             //   "detectRetina" : true,
+             // }).addTo(webmap);
+
+
+
+          // jekyll loop through posts
+    var overLayers = [];
+    var icons = [];
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33862_cc_black.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33863_cc_green.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33864_cc_orange.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33865_cc_pink.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33866_cc_plum.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33867_cc_purple.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33868_cc_red.svg');
+        
+    
+        
+            icons.push('/assets/leaflet/img/noun_33869_cc_rose.svg');
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    var counter = -1;
+    var groups = {};
+
+    
+    counter += 1;
+
+    
+    var layers = [];
+    if (markergrouping == 'grouped') {
+    groups[counter] = L.featureGroup.subGroup(markers);
+    var control = L.control.layers(null, null, { collapsed: true, position: 'topleft' });
+    }
+
+    
+          lat = 49.418056;
+          lng = -1.176389;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>Harry Singley...</strong>";
+          } else {
+          content = "<strong>Harry Singley Jr.</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1944-01-01-harrysingleyjr.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1944-01-01-harrysingleyjr.html";
+            article_url = '/PhillyMemorialsTest/article/1944-01-01-harrysingleyjr.html';
+            item_id = "/article/1944-01-01-harrysingleyjr.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+          lat = 48.8467;
+          lng = 6.5925;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>Michael Basca...</strong>";
+          } else {
+          content = "<strong>Michael Basca</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1944-01-01-michaelbasca.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1944-01-01-michaelbasca.html";
+            article_url = '/PhillyMemorialsTest/article/1944-01-01-michaelbasca.html';
+            item_id = "/article/1944-01-01-michaelbasca.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+
+        var imageurl = '<img class="legend" src="' + iconurl + '">'
+        if (markergrouping == 'grouped') {
+    		map.addLayer(markers);
+    		var name = imageurl + ' ' + 'ARMY';
+    		overLayers.push({"name":name, "layer":groups[counter]})
+    	} else if (markergrouping == 'single') {
+    	 var name = 'ARMY';
+    	 overLayers.push({"name":name, icon: imageurl, active: true, "layer":L.layerGroup(layers)})
+    	}
+     
+    counter += 1;
+
+    
+    var layers = [];
+    if (markergrouping == 'grouped') {
+    groups[counter] = L.featureGroup.subGroup(markers);
+    var control = L.control.layers(null, null, { collapsed: true, position: 'topleft' });
+    }
+
+    
+          lat = 17.4459;
+          lng = 107.2958;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>John R....</strong>";
+          } else {
+          content = "<strong>John R. McDonough</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1962-01-01-johnrmcdonough.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1962-01-01-johnrmcdonough.html";
+            article_url = '/PhillyMemorialsTest/article/1962-01-01-johnrmcdonough.html';
+            item_id = "/article/1962-01-01-johnrmcdonough.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+
+        var imageurl = '<img class="legend" src="' + iconurl + '">'
+        if (markergrouping == 'grouped') {
+    		map.addLayer(markers);
+    		var name = imageurl + ' ' + 'NAVY';
+    		overLayers.push({"name":name, "layer":groups[counter]})
+    	} else if (markergrouping == 'single') {
+    	 var name = 'NAVY';
+    	 overLayers.push({"name":name, icon: imageurl, active: true, "layer":L.layerGroup(layers)})
+    	}
+     
+    counter += 1;
+
+    
+    var layers = [];
+    if (markergrouping == 'grouped') {
+    groups[counter] = L.featureGroup.subGroup(markers);
+    var control = L.control.layers(null, null, { collapsed: true, position: 'topleft' });
+    }
+
+    
+          lat = 15.5728;
+          lng = 108.0753;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>Paul M....</strong>";
+          } else {
+          content = "<strong>Paul M. McGrath</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1968-01-01-paulmmcgrath.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1968-01-01-paulmmcgrath.html";
+            article_url = '/PhillyMemorialsTest/article/1968-01-01-paulmmcgrath.html';
+            item_id = "/article/1968-01-01-paulmmcgrath.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+          lat = 16.7469;
+          lng = 107.194;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>Alexander K....</strong>";
+          } else {
+          content = "<strong>Alexander K. Ward</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1968-01-01-alexanderkward.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1968-01-01-alexanderkward.html";
+            article_url = '/PhillyMemorialsTest/article/1968-01-01-alexanderkward.html';
+            item_id = "/article/1968-01-01-alexanderkward.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+          lat = 15;
+          lng = 108.67;
+
+          if ($(window).height() < 600 || $(window).width() < 550){
+          content = "<strong>Philadelphia_Neighborhoods: Somerton...</strong>";
+          } else {
+          content = "<strong>Philadelphia_Neighborhoods: Somerton</strong><br>";
+          }
+
+          var iconurl = "/PhillyMemorialsTest" + icons[counter]
+          var mbox = L.icon({
+                iconUrl: iconurl,
+                iconSize : [46, 50],
+                iconAnchor : [17, 36],
+                popupAnchor : [-1, 8]
+              });
+          var marker = L.marker([lat, lng], {
+            icon: mbox,
+          }).bindPopup(content, {offset:new L.Point(0,-30)});
+          marker.iconURL = iconurl;
+
+          if (markergrouping == 'grouped') {
+        	marker.addTo(groups[counter])
+          } else if (markergrouping == 'single') {
+          	layers.push(marker);
+          }
+
+          filename = "/article/1965-01-01-albertcdoody.html"
+          if (items[filename] == undefined) {
+          items[filename] = [marker];
+          } else {
+          items[filename].push(marker);
+          }
+
+
+
+          marker.on('click', function(){
+            post_url = "/PhillyMemorialsTest/#/article/1965-01-01-albertcdoody.html";
+            article_url = '/PhillyMemorialsTest/article/1965-01-01-albertcdoody.html';
+            item_id = "/article/1965-01-01-albertcdoody.html";
+            window.location = (post_url);
+            articlerender(article_url, item_id);
+
+          });
+
+          
+
+        var imageurl = '<img class="legend" src="' + iconurl + '">'
+        if (markergrouping == 'grouped') {
+    		map.addLayer(markers);
+    		var name = imageurl + ' ' + 'USMC';
+    		overLayers.push({"name":name, "layer":groups[counter]})
+    	} else if (markergrouping == 'single') {
+    	 var name = 'USMC';
+    	 overLayers.push({"name":name, icon: imageurl, active: true, "layer":L.layerGroup(layers)})
+    	}
+     
+          // end loop through posts
+    if (markergrouping == 'grouped') {
+    	for (i = 0; i < overLayers.length; i++) {
+    		control.addOverlay(overLayers[i]['layer'], overLayers[i]['name']);
+    		control.addTo(map);
+    		overLayers[i]['layer'].addTo(map);
+    	}
+    	control.addTo(map);
+    } else if (markergrouping == 'single') {
+    	var panelLayers = new L.Control.PanelLayers(null, overLayers, {
+    		compact: true,
+    		collapsed: true,
+    		position: 'topleft'
+    	});
+    // map.addControl(panelLayers);
+
+    }
+
+    // map.setView([14, 106], 5)
+
+    //map.fitBounds(markers.getBounds());
+    return items;
+    }
+    </script>
+<div class="dropdown">
+ <button class="menu-button dropdown" onclick="dropdowntoggle()"><i class="fa fa-bars" aria-hidden="true"></i></button>
+ 		<div class="dropdown-content sub-menu" onclick="dropdowntoggle()">
+ 		<div class="menu-links">
+ 		<a class="close-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+ 		<a href="/PhillyMemorialsTest/">Home</a>
+ 		
+ 		
+ 			<a href="/PhillyMemorialsTest/#/article-index/" onclick="onClick('/article-index/')" class="menu-link">Villanova Veterans</a>
+		
+		
+ 		
+ 			<a href="/PhillyMemorialsTest/#/credits/" onclick="onClick('/credits/')" class="menu-link">Credits</a>
+		
+		
+ 		
+ 		
+ 		
+ 		
+ 		
+ 		
+ 		
+ 		
+		</div>
+</div>
+</div>
+<script>
+function circletoggle() {
+  if ($('.circle-content').css("height") == '0px') {
+   $('.circle-content').css("height", '200px');
+   $('.circle-content').css("width", '200px');
+   $('.circle-content').css("opacity", '.95');
+   $('.menu-button').css("display", "none");
+   
+  } else {
+  	$('.circle-content').css("height", '0px');
+  	$('.circle-content').css("width", '0px');
+  	$('.circle-content').css("opacity", '0');
+  	$('.menu-button').css("display", "inline-block");
+  }
+}
+function dropdowntoggle() {
+  if ($('.dropdown-content').css("display") == 'none') {
+   $('.dropdown-content').css("display", 'block')
+  } else {
+  	$('.dropdown-content').css("display", 'none')
+  }
+}
+
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+var svgmap = document.getElementById('map');
+
+var observer = new MutationObserver(function(mutations) {
+    var paths = document.getElementsByClassName("leaflet-interactive");
+
+    Array.from(paths).forEach((path) => {
+        if (path.getAttribute("fill") != "rgb(153, 153, 153)") {
+           path.setAttribute("fill", "rgb(153, 153, 153)");
+           path.setAttribute("stroke", "rgb(66, 66, 66)");
+           path.setAttribute("fill-opacity", "0.5");
+           path.setAttribute("stroke-opacity", "0.65");
+        }
+    });
+});
+
+observer.observe(svgmap, {
+    childList: true,
+    subtree: true
+});
+
+</script>
+
+<select id="choose" class="dropdown" onchange="change_map()">
+    <option value="grouped">Clustered</option>
+    <option value="single">Not clustered</option>
+</select>
+
+</body>
+</html>

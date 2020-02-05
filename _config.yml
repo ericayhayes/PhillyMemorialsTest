@@ -1,0 +1,47 @@
+---
+title: Philadelphia Map Test
+timezone: America/New_York
+collections:
+  article-index:
+    title: Article Index
+    output: true
+    permalink: "/article-index/:name/"
+  posts:
+    title: Posts
+    output: true
+  uploads:
+    title: Uploads
+    output: true
+email: michael.d.brown@villanova.edu
+description: 
+baseurl: "/PhillyMemorialsTest"
+url: https://falveydigitalscholarship.github.io/honoringthefallen/
+github_repo: https://github.com/FalveyDigitalScholarship
+copyright_statement: "© 2019 Falvey Memorial Library CC BY-NC-SA 4.0."
+markdown: kramdown
+encoding: utf-8
+accent_color: rgba(51, 63, 106, 1)
+accent_font: Della Respira
+twitter_username: VillanovaVets
+github_username: FalveyDigitalScholarship
+map-credits: <a target="_blank" href="href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
+  | <a target="_blank" href="https://github.com/dnoneill/flaneur">Flâneur</a>
+subdomains:
+- a
+- b
+- c
+minZoom: 0
+maxZoom: 20
+setView: "[14, 106], 5"
+marker-grouping: grouped
+window-height: 600
+window-width: 550
+permalink: "/:categories/:title/"
+menu-type: dropdown
+menu-height: 200px
+menu-width: 200px
+menu-opacity: ".95"
+exclude_pages:
+- index.html
+- home.md
+future: true

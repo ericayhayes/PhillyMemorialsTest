@@ -1,0 +1,112 @@
+---
+layout: page
+---
+
+{% if page.status %}
+    {% assign status = page.status %}
+{% else %}
+    {% assign status = 'Veteran' %}
+{% endif %}
+
+{% for status in site.article-index %}
+    <a href="{{site.baseurl}}/#{{ status.url }}" class="index-button" onclick='onClick("{{status.url}}");'>{{ status.status }}</a>
+{% endfor %}
+
+<!-- sort a-z -->
+{% if status == 'Veteran' %}
+ {% assign azsort = site.posts | sort: 'title' %}
+  <h3>Veteran</h3>
+  <ul>
+    {% for post in azsort %}
+      <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+    {% endfor %}
+   </ul>
+{% endif %}
+
+<!-- sort category -->
+<div id="post-list" class="index">
+   {% if status == 'branch' %}
+     {% for branch in site.categories %}
+       {% capture branch_name %}{{ branch | first }}{% endcapture %}
+       <h3>{{ branch_name}}</h3>
+       <ul>
+         {% for post in site.categories[branch_name] %}
+          <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+         {% endfor %}
+       </ul>
+     {% endfor %}
+   {% endif %}
+
+<!-- sort date -->
+   {% if status == 'Year of Death' %}
+         {% for post in site.posts %}
+	         {% unless post.next %}
+	           <h3>{{ post.date | date: '%Y' }}</h3>
+	           {% else %}
+	             {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+	             {% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
+	           {% if year != nyear %}
+	             <h3>{{ post.date | date: '%Y' }}</h3>
+	           {% endif %}
+	         {% endunless %}
+             <ul>
+	               <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+             </ul>
+	       {% endfor %}
+   {% endif %}
+
+   <!--sort villanova class date-->
+   {% if status == 'Villanova Class Year' %}
+      {% assign posts_sorted = site.posts | sort: "vudate" %}
+         {% for post in posts_sorted reversed %}
+	         {% if forloop.first %}
+	           <h3>{{ post.vudate | vudate: '%Y' }}</h3>
+	           {% else %}
+	             {% capture year %}{{ post.vudate | vudate: '%Y' }}{% endcapture %}
+	             {% capture nyear %}{{ posts_sorted.vudate | vudate: '%Y' }}{% endcapture %}
+	           {% if year != nyear %}
+	             <h3>{{ post.vudate | vudate: '%Y' }}</h3>
+	           {% endif %}
+	         {% endif %}
+             <ul>
+	               <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+             </ul>
+	       {% endfor %}
+   {% endif %}
+
+
+   <!--sort villanova class date
+   {% if status == 'Villanova Class Year' %}
+      {% assign posts_sorted = site.posts | sort: "vudate" %}
+         {% for post in posts_sorted reversed %}
+	         {% if forloop.first %}
+	           <h3>{{ post.vudate | vudate: '%Y' }}</h3>
+	           {% else %}
+	             {% capture year %}{{ post.vudate | vudate: '%Y' }}{% endcapture %}
+	             {% capture nyear %}{{ posts_sorted[forloop.index].vudate | vudate: '%Y' }}{% endcapture %}
+	           {% if year != nyear %}
+	             <h3>{{ post.vudate | vudate: '%Y' }}</h3>
+	           {% endif %}
+	         {% endif %}
+             <ul>
+	               <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+             </ul>
+	       {% endfor %}
+   {% endif %}-->
+
+
+
+
+<!-- sort quarter -->
+   <!-- {% if status == 'quarter' %}
+     {% assign postsort = site.posts  | sort: 'date' | reverse | group_by_exp:"post", "post.quarter" %}
+       {% for year in postsort %}
+         <h3>{{year.name}}</h3>
+         <ul>
+           {% for post in year.items %}
+             <li><a href="{{site.baseurl}}/#{{post.url}}" onclick='onClick("{{post.url}}");'>{{post.title}}</a></li>
+           {% endfor %}
+         </ul>
+       {% endfor %}
+  {% endif %} -->
+</div>
