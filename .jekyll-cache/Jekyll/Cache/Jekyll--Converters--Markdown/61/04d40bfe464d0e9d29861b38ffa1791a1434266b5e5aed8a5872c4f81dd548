@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-  <body>
-    <div id="article-content">
-	        <img class="home-icon" src="assets/images/villanovalogo.png">
-     <a href="https://library.villanova.edu/Find/Record/vudl:468983" target="_blank"><img class="home-img" src="images/Panorama_VillanovaCollegeArmyUnit_WWI.png"></a>
-     <p class="caption">Selection of Panorama, Villanova College Army Unit World War I, [1918].</p>
-
-     <!-- <h1 class="home-title"> Honoring the Fallen: An Interactive Memorial Map </h1> -->
-     <h1 class="home-title">Honoring the Fallen: An Interactive Memorial Map</h1>
-     <hr />
-     <p>Test
+I"\	<p>Test
 Test
 Test</p>
 
@@ -23,16 +11,4 @@ Test</p>
 <p>When you browse this map, you will see pins scattered across the globe, and when you click on a pin, it will bring up the person’s name, some pictures, some details surrounding the service member, and the circumstance surrounding their death. As more information becomes known, we will update the map.</p>
 
 <p>We hope that through this project we can increase awareness across campus and in our community. Military service ought to be recognized and respected, and through this mapping project we are paying tribute to their service and sacrifice by ensuring that they are never forgotten. In collaboration with Falvey Memorial Library’s <a href="https://library.villanova.edu/collections/distinctive">Distinctive Collections and Digital Engagement Department</a> and their <a href="https://library.villanova.edu/collections/distinctive/digitallibrary/digital-scholarship">Digital Scholarship Program</a>, this map was made possible. This project is part of Lest We Forget: The Villanova Veterans History Project, along with the <a href="https://veteransvoices.library.villanova.edu">Voices of Villanova Veterans oral history project</a> documenting the stories of Veterans at Villanova University.</p>
-
-
-         <footer class="footer">
-            © 2019 Falvey Memorial Library CC BY-NC-SA 4.0.<br>
-            <font size="5.5"><a href="https://twitter.com/VillanovaVets"><i class="fa fa-twitter"></i></a>
-                <a href="https://github.com/FalveyDigitalScholarship"><i class="fa fa-github"></i></a>
-                <a href="mailto:michael.d.brown@villanova.edu"><i class="fa fa-envelope"></i></a></font>
-    </footer>
-
-
-   </div>
-  </body>
-</html>
+:ET

@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-  <body>
-    <div id="article-content">
-	   <div class="post">
-    <header>
-  	  <!-- <p class="post-header">John R. McDonough</p> -->
-      <!-- OR -->
-      <p class="post-header">Honoring the Fallen: An Interactive Memorial Map</p>
-      <h1 class="post-title">John R. McDonough</h1>
-      <p class="byline"></p>
-    </header>
-    <div id="content">
-      <p class="image"><img src="images/JohnMcDonough.png" alt="John R. McDonough" /></p>
+I"Ò<p class="image"><img src="images/JohnMcDonough.png" alt="John R. McDonough" /></p>
 <p class="caption"><a href="https://library.villanova.edu/Find/Record/vudl:540336">Belle Air Villanova College Yearbook 1962, page 276</a>.</p>
 
 <ul>
@@ -39,40 +25,4 @@
   <li>John R. McDonough. Vietnam Veterans Memorial Fund Wall of Faces. <a href="https://www.vvmf.org/Wall-of-Faces/36556/JOHN-R-MCDONOUGH/">https://www.vvmf.org/Wall-of-Faces/36556/JOHN-R-MCDONOUGH/</a></li>
   <li>College, V. (1962). Belle Air 1962. Villanova, PA : Villanova College. <a href="https://library.villanova.edu/Find/Record/vudl:540336">https://library.villanova.edu/Find/Record/vudl:540336</a></li>
 </ol>
-
-    </div>
-    <div>
-      <h4>Cite this article</h4>
-      <p class="citation"><!-- Suggested citation code -->
-"John R. McDonough." <em>Honoring the Fallen: An Interactive Memorial Map</em>.  http://localhost:4000/article/1962-01-01-johnrmcdonough.html
-</p>
-    </div>
-    <!--<div class="Previous-next">
-      
-        <a class="previous" href="/PhillyMemorialsTest/#/article/1944-06-06-harrysingleyjr.html">&laquo; Harry Singley Jr.</a>
-      
-      
-        <a class="next" href="/PhillyMemorialsTest/#/article/1966-09-09-albertcdoody.html">Philadelphia_Neighborhoods: Somerton  &raquo;</a>
-      
-    </div>-->
-</div>
-
-
-<script>
-var images = document.getElementsByClassName("image");
-var caption = document.getElementsByClassName("caption");
-
-for (var i = 0; i < images.length; i++) {
-   	var link = images[i].childNodes[0].src;
-   	images[i].innerHTML = "<a href='" + link + "' data-lightbox=' ' data-title='" + caption[i].innerHTML  + "'>" + images[i].childNodes[0].outerHTML + "</a>";
-}
-
-lightbox.option({
-      'resizeDuration': 200,
-      'wrapAround': true
- })
-</script>
-
-   </div>
-  </body>
-</html>
+:ET

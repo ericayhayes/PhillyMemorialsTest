@@ -132,11 +132,11 @@
 
           });
 
-          {% endfor %}
+    {% endfor %}
 
-        var imageurl = '<img class="legend" src="' + iconurl + '">'
-        if (markergrouping == 'grouped') {
-    		map.addLayer(markers);
+      var imageurl = '<img class="legend" src="' + iconurl + '">'
+      if (markergrouping == 'grouped') {
+    		webmap.addLayer(markers);
     		var name = imageurl + ' ' + '{{category_name}}';
     		overLayers.push({"name":name, "layer":groups[counter]})
     	} else if (markergrouping == 'single') {
